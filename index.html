@@ -21,6 +21,8 @@
   
           <label for="income">#month in production</label>
           <input type="number" name="production_months" v-model.number="production_months">
+
+          {{ annualizedIncome }}
         </fieldset>
 
         <fieldset v-if="well_age === '3andover'">

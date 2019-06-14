@@ -19,6 +19,7 @@
         { value: 20 },
         { value: 30 }
       ],
+      annualizedIncome: 0,
       incomeAverage: 0,
       production_months: 0,
       estimated_appraised_value: 0,
@@ -26,6 +27,9 @@
       estimated_property_tax: 0
     },
     computed: {
+      annualizedIncome: function() {
+        return (this.incomeAverage / this.production_months) * 12;
+      },
       incomeAverage: function() {
         var avg = 0;
 
@@ -51,19 +55,13 @@
       },
       estimated_appraised_value: function() {
         var value = 0;
-        var annualizedValue = (this.incomeAverage / this.production_months) * 12;
 
         if (this.well_age === 'under3') {
-          value = annualizedValue * this.estimated_appraised_value_multiplier;
+          value = this.annualizedIncome * this.estimated_appraised_value_multiplier;
         } else if (this.well_age === '3andover') {
           value = this.incomeAverage * this.estimated_appraised_value_multiplier;
         }
 
-        console.log(value);
-        if (value < 180) {
-          return 180;
-        }
-        
         return (isNaN(value) || !isFinite(value) ? 0: value);
       },
       estimated_assessed_value: function() {
