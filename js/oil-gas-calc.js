@@ -5,7 +5,13 @@
     // instance state
     data: {
       config: {
-        estimateYear: 2019
+        estimateYear: 2019,
+        historicalFactor: {
+          lt3years: 2.75,
+          egt3years: 2.5
+        },
+        appraisalRate: 0.6,
+        levyRate: 0.020336
       },
       well_age: '',
       income: [
@@ -38,9 +44,9 @@
       estimated_appraised_value_multiplier: function() {
 
         if (this.well_age === 'under3') {
-          return 2.75;
+          return this.config.historicalFactor.lt3years;
         } else if (this.well_age === '3andover') {
-          return 2.5;
+          return this.config.historicalFactor.egt3years;
         }
       },
       estimated_appraised_value: function() {
@@ -52,14 +58,19 @@
         } else if (this.well_age === '3andover') {
           value = this.incomeAverage * this.estimated_appraised_value_multiplier;
         }
+
+        console.log(value);
+        if (value < 180) {
+          return 180;
+        }
         
         return (isNaN(value) || !isFinite(value) ? 0: value);
       },
       estimated_assessed_value: function() {
-        return this.estimated_appraised_value * 0.6;
+        return this.estimated_appraised_value * this.config.appraisalRate;
       },
       estimated_property_tax: function() {
-        return this.estimated_assessed_value * 0.020336;
+        return this.estimated_assessed_value * this.config.levyRate;
       },
     },
     methods: {
