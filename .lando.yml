@@ -1,4 +1,4 @@
-name: marco-county-assessor-oil-&-gas-calculator
+name: marco-county-assessor-oil-gas-calculator
 recipe: lemp
 config:
   webroot: .
