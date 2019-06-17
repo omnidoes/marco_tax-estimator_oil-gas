@@ -1,62 +1,112 @@
 <html>
   <head>
-
+    <link rel="stylesheet" type="text/css" href="http://dev-marshall-county-assessor.pantheonsite.io/wp-content/themes/neve/style.min.css?ver=2.3.7">
   </head>
 
   <body>
-    <div id="oil-gas-calculator">
-      <form action="">
-        <h2>{{ config.estimateYear }} Tax Estimate:</h2>
-        {{ incomeAverage }}
-        <label for="well_age">Well age</label>
-        <select name="well_age" v-model="well_age">
-          <option value="" selected disabled hidden>Choose here</option>
-          <option value="under3">Less than 3 years old</option>
-          <option value="3andover">3 years old or older</option>
-        </select>
+    <div class="container">
+      <noscript>
+        <strong>This calculator requires Javascript.</strong>
+      </noscript>
+      <div id="oil-gas-calculator">
+        <h1>{{ config.estimateYear }} Oil & Gas Tax Estimate</h1>
+        <form action="">
+          <table>
+            <tbody>
+
+              <tr>
+                <td>
+                  <label for="well_age">How old is your well?</label>
+                </td>
+                <td>
+                  <select name="well_age" v-model="well_age">
+                    <option value="" selected disabled hidden>Choose here</option>
+                    <option value="under3">Less than 3 years old</option>
+                    <option value="3andover">3 years old or older</option>
+                  </select>
+                </td>
+              </tr>
+            
+              <template v-if="well_age === 'under3'">
+              <tr>
+                <td>
+                  <label for="income[0].value">Production Income Year {{ config.estimateYear - 2}}</label>
+                </td>
+                <td>
+                  <input type="number" name="income[0].value" v-model.number="income[0].value">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label for="income">#month in production</label>
+                </td>
+                <td>
+                  <input type="number" name="production_months" v-model.number="production_months">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Annualized Income
+                </td>
+                <td>
+                  {{ formatCurrency(annualizedIncome) }}
+                </td>
+              </tr>
+              </template>
+
+              <template v-if="well_age === '3andover'">
+              <template v-for="(incomeyr, index) in income">
+              <tr>
+                <td>
+                  <label for="income">Production Income Year {{ (config.estimateYear - 2) - index }}</label>
+                </td>
+                <td>
+                  <input type="number" name="income" v-model.number="income[index].value">
+                </td>
+              </tr>
+              </template>
+              <tr>
+                <td>
+                  3 year average
+                </td>
+                <td>
+                  {{ formatCurrency(incomeAverage) }}
+                </td>
+              </tr>
+              </template>
+
+            </tbody>
+          </table>
+        </form>
+
+        <h2>Estimates</h2>
+
+        <table>
+          <tr>
+            <td>Estimated Appraised Value</td>
+            <td>{{ formatCurrency(estimated_appraised_value) }}</td>
+          </tr>
+          <tr>
+            <td>Estimated Assessed Value</td>
+            <td>{{ formatCurrency(estimated_assessed_value) }}</td>
+          </tr>
+          <tr>
+            <td>Estimated {{ config.estimateYear }} property tax</td>
+            <td>{{ formatCurrency(estimated_property_tax) }}</td>
+          </tr>
+        </table>
+
+        <h2>Disclosure</h2>
+
+        <p>This is only an estimate of your {{ config.estimateYear }} oil and gas property tax. Your actual taxes may be different.</p>
+
+        <p>The minimum Assessed value for Marshall County is $180.00.  If your appraised value is less than $180.00,</p>
+        <p>$180.00 will be the appraised value used to value your oil and gas interest and your tax estimate will be $3.80.</p>
         
-        <fieldset v-if="well_age === 'under3'">
-          <label for="income[0].value">Production Income Year {{ config.estimateYear - 2}}</label>
-          <input type="number" name="income[0].value" v-model.number="income[0].value">
-  
-          <label for="income">#month in production</label>
-          <input type="number" name="production_months" v-model.number="production_months">
-
-          {{ annualizedIncome }}
-        </fieldset>
-
-        <fieldset v-if="well_age === '3andover'">
-          <div v-for="(incomeyr, index) in income">
-            <label for="income">Production Income Year {{ (config.estimateYear - 2) - index }}</label>
-            <input type="number" name="income" v-model.number="income[index].value">
-          </div>
-
-          <p><span><b>3 year average</b></span> {{ incomeAverage }}</p>
-        </fieldset>
-      </form>
-      <table>
-        <tr>
-          <td>Estimated Appraised Value</td>
-          <td>{{ formatCurrency(estimated_appraised_value) }}</td>
-        </tr>
-        <tr>
-          <td>Estimated Assessed Value</td>
-          <td>{{ formatCurrency(estimated_assessed_value) }}</td>
-        </tr>
-        <tr>
-          <td>Estimated {{ config.estimateYear }} property tax</td>
-          <td>{{ formatCurrency(estimated_property_tax) }}</td>
-        </tr>
-      </table>
-
-      <p>This is only an estimate of your {{ config.estimateYear }} oil and gas property tax. Your actual taxes may be different.</p>
-
-      <p>The minimum Assessed value for Marshall County is $180.00.  If your appraised value is less than $180.00,</p>
-      <p>$180.00 will be the appraised value used to value your oil and gas interest and your tax estimate will be $3.80.</p>
-      
-      <p>Production Income is the amount paid for oil & gas that was removed from the ground during the calendar year.</p>
-      <p>This will not equal your 1099.</p>
-      
+        <p>Production Income is the amount paid for oil & gas that was removed from the ground during the calendar year.</p>
+        <p>This will not equal your 1099.</p>
+        
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>

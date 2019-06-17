@@ -5,19 +5,19 @@
     // instance state
     data: {
       config: {
-        estimateYear: 2019,
+        estimateYear: marco_ogtax_settings.estimateYear || 2019,
         historicalFactor: {
-          lt3years: 2.75,
-          egt3years: 2.5
+          lt3years: marco_ogtax_settings.histfactorlt3years || 2.75,
+          egt3years: marco_ogtax_settings.histfactoregt3years || 2.5
         },
-        appraisalRate: 0.6,
-        levyRate: 0.020336
+        appraisalRate: marco_ogtax_settings.appraisalRate || 0.6,
+        levyRate: marco_ogtax_settings.levyRate || 0.020336
       },
       well_age: '',
       income: [
-        { value: 10 },
-        { value: 20 },
-        { value: 30 }
+        { value: 0 },
+        { value: 0 },
+        { value: 0 }
       ],
       annualizedIncome: 0,
       incomeAverage: 0,
@@ -28,7 +28,9 @@
     },
     computed: {
       annualizedIncome: function() {
-        return (this.incomeAverage / this.production_months) * 12;
+        var value = (this.incomeAverage / this.production_months) * 12;
+
+        return (isNaN(value) || !isFinite(value) ? 0: value);
       },
       incomeAverage: function() {
         var avg = 0;
